@@ -10,7 +10,8 @@ load_dotenv()  # Load environment variables from .env file
 API_KEY = os.getenv("GEMINI_API_KEY")
 if not API_KEY:
     raise RuntimeError("API key not found. Please check your environment variables.")
-GEMINI_API_URL = "https://gemini-api-endpoint.com/generate-content"
+GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key={GEMINI_API_KEY}"
+
 
 @app.route('/')
 def index():
@@ -47,7 +48,6 @@ def generate_content():
         return jsonify({"error": "Failed to generate content"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=False)
     port = int(os.environ.get('PORT', 5000))  # Heroku provides the PORT environment
     app.run(host='0.0.0.0', port=port)  # Run on 0.0.0.0 to allow external access
 
