@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Content Generator</title>
+</head>
+<body>
+    <h1>AI Content Generator</h1>
+    <form id="contentForm">
+        <label for="tone">Tone of Writing:</label>
+        <select id="tone" name="tone">
+            <option value="formal">Formal</option>
+            <option value="informal">Informal</option>
+            <option value="professional">Professional</option>
+            <option value="friendly">Friendly</option>
+        </select><br><br>
+
+        <label for="brand_voice">Example Brand Voice (content example):</label><br>
+        <textarea id="brand_voice" name="brand_voice" rows="4" cols="50"></textarea><br><br>
+
+        <label for="word_count">Number of Words:</label>
+        <input type="number" id="word_count" name="word_count" min="50" max="1000"><br><br>
+
+        <label for="main_prompt">Content Info (Main Prompt):</label><br>
+        <textarea id="main_prompt" name="main_prompt" rows="4" cols="50"></textarea><br><br>
+
+        <button type="submit">Generate Content</button>
+    </form>
+
+    <h2>Generated Content:</h2>
+    <p id="generatedContent"></p>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
