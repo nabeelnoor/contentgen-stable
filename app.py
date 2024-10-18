@@ -47,4 +47,7 @@ def generate_content():
         return jsonify({"error": "Failed to generate content"}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
+    port = int(os.environ.get('PORT', 5000))  # Heroku provides the PORT environment
+    app.run(host='0.0.0.0', port=port)  # Run on 0.0.0.0 to allow external access
+
