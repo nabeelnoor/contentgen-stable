@@ -33,6 +33,9 @@ def generate_content():
         "main_prompt": main_prompt
     }
     
+    # Log the payload to check if it's being built correctly
+    print(f"API Payload: {api_payload}")
+    
     # Send request to Gemini API
     response = requests.post(
         GEMINI_API_URL,
@@ -45,10 +48,10 @@ def generate_content():
         generated_content = response.json().get('generated_content')
         return jsonify({"content": generated_content})
     else:
-        # Log error response
         error_message = response.text
         print(f"Error response from Gemini API: {error_message}")
         return jsonify({"error": f"Failed to generate content: {error_message}"}), 500
+
 
 
 if __name__ == '__main__':
