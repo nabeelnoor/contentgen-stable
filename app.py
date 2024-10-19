@@ -45,7 +45,9 @@ def generate_content():
         generated_content = response.json().get('generated_content')
         return jsonify({"content": generated_content})
     else:
-        error_message = response.json()  # Get the full error message
+        # Log error response
+        error_message = response.text
+        print(f"Error response from Gemini API: {error_message}")
         return jsonify({"error": f"Failed to generate content: {error_message}"}), 500
 
 
