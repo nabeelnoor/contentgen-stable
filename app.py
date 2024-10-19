@@ -45,7 +45,9 @@ def generate_content():
         generated_content = response.json().get('generated_content')
         return jsonify({"content": generated_content})
     else:
-        return jsonify({"error": "Failed to generate content"}), 500
+        error_message = response.json()  # Get the full error message
+        return jsonify({"error": f"Failed to generate content: {error_message}"}), 500
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Heroku provides the PORT environment
