@@ -5,12 +5,14 @@ document.getElementById('contentForm').addEventListener('submit', function(event
     const brandVoice = document.getElementById('brand_voice').value;
     const wordCount = document.getElementById('word_count').value;
     const mainPrompt = document.getElementById('main_prompt').value;
+    const language = document.getElementById('language').value;
 
     const data = {
         tone: tone,
         brand_voice: brandVoice,
         word_count: wordCount,
-        main_prompt: mainPrompt
+        main_prompt: mainPrompt,
+        language: language
     };
 
     fetch('/generate-content', {

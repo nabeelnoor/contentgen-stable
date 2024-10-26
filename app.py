@@ -24,6 +24,7 @@ def generate_content():
     brand_voice = data.get("brand_voice")
     word_count = data.get("word_count")
     main_prompt = data.get("main_prompt")
+    language = data.get("language")
 
     # Prepare the input prompt with optional parameters
     prompt = f"""
@@ -35,8 +36,9 @@ def generate_content():
     - Tone: {tone if tone else 'Not specified'}
     - Brand Voice: {brand_voice if brand_voice else 'Not specified'}
     - Word Count: {word_count if word_count else 'Not specified'}
+    - Language: {language if language else 'English'}
 
-    Please generate content based on the main prompt, considering the specified parameters.
+    Please generate content based on the main prompt, considering the specified parameters. The content should be in {language} language.
     """
 
     try:
@@ -57,3 +59,4 @@ def generate_content():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Heroku provides the PORT environment
     app.run(host='0.0.0.0', port=port)  # Run on 0.0.0.0 to allow external access
+
