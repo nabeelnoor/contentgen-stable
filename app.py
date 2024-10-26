@@ -25,14 +25,19 @@ def generate_content():
     word_count = data.get("word_count")
     main_prompt = data.get("main_prompt")
 
-    # Prepare the input prompt with optional parameters (tone, brand_voice, etc.)
-    prompt = main_prompt
-    if tone:
-        prompt += f"\nTone: {tone}"
-    if brand_voice:
-        prompt += f"\nBrand voice: {brand_voice}"
-    if word_count:
-        prompt += f"\nWord count: {word_count}"
+    # Prepare the input prompt with optional parameters
+    prompt = f"""
+    Content Generation Request:
+    
+    Main Prompt: {main_prompt}
+
+    Parameters:
+    - Tone: {tone if tone else 'Not specified'}
+    - Brand Voice: {brand_voice if brand_voice else 'Not specified'}
+    - Word Count: {word_count if word_count else 'Not specified'}
+
+    Please generate content based on the main prompt, considering the specified parameters.
+    """
 
     try:
         # Use the gemini model to generate content
@@ -40,7 +45,7 @@ def generate_content():
         response = model.generate_content(prompt)
 
         # Handle the response from the Gemini API
-        if response and 'text' in response:
+        if response and hasattr(response, 'text'):
             return jsonify({"content": response.text})
         else:
             return jsonify({"error": "Failed to generate content"}), 500
