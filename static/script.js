@@ -27,13 +27,39 @@ document.getElementById('contentForm').addEventListener('submit', function(event
     .then(response => response.json())
     .then(data => {
         if (data.content) {
-            document.getElementById('generatedContent').textContent = data.content;
+            // Create a new div for formatted content
+            const contentDiv = document.getElementById('generatedContent');
+            
+            // Convert markdown-like syntax to HTML
+            let formattedContent = data.content
+                // Convert headers
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                // Convert bullet points
+                .replace(/\* (.*?)(\n|$)/g, '<li>$1</li>')
+                // Convert numbered lists
+                .replace(/\d\. (.*?)(\n|$)/g, '<li>$1</li>')
+                // Convert paragraphs
+                .split('\n\n').join('</p><p>');
+
+            // Wrap bullet points in ul tags
+            if (formattedContent.includes('<li>')) {
+                formattedContent = '<ul>' + formattedContent + '</ul>';
+            }
+
+            // Add initial paragraph tag
+            formattedContent = '<p>' + formattedContent + '</p>';
+            
+            // Set the formatted HTML content
+            contentDiv.innerHTML = formattedContent;
+            
+            // Add some basic styling
+            contentDiv.classList.add('generated-content');
         } else {
-            document.getElementById('generatedContent').textContent = "Error: Unable to generate content.";
+            document.getElementById('generatedContent').innerHTML = 
+                "<p class='error'>Error: Unable to generate content.</p>";
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        document.getElementById('generatedContent').textContent = "Error: Unable to generate content.";
     });
 });

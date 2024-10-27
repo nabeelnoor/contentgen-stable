@@ -5,6 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Content Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .generated-content {
+            padding: 1.5rem;
+            line-height: 1.6;
+            color: #374151;
+        }
+        
+        .generated-content p {
+            margin-bottom: 1rem;
+        }
+        
+        .generated-content strong {
+            color: #1F2937;
+            font-weight: 600;
+        }
+        
+        .generated-content ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+            list-style-type: disc;
+        }
+        
+        .generated-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .error {
+            color: #DC2626;
+            font-weight: 500;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-3xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
@@ -68,8 +99,8 @@
             </form>
 
             <div class="mt-8">
-                <h2 class="text-lg font-medium text-gray-900">Generated Content:</h2>
-                <div id="generatedContent" class="mt-2 p-4 bg-gray-50 rounded-md text-sm text-gray-700"></div>
+                <h2 class="text-xl font-semibold text-gray-900 mb-4">Generated Content:</h2>
+                <div id="generatedContent" class="bg-white rounded-lg shadow p-6"></div>
             </div>
         </div>
     </div>
