@@ -6,13 +6,15 @@ document.getElementById('contentForm').addEventListener('submit', function(event
     const wordCount = document.getElementById('word_count').value;
     const mainPrompt = document.getElementById('main_prompt').value;
     const language = document.getElementById('language').value;
+    const contentStyle = document.getElementById('content_style').value;
 
     const data = {
         tone: tone,
         brand_voice: brandVoice,
         word_count: wordCount,
         main_prompt: mainPrompt,
-        language: language
+        language: language,
+        content_style: contentStyle
     };
 
     fetch('/generate-content', {
