@@ -1,3 +1,5 @@
+![banner](banner.png)
+
 # AI Content Generator
 
 This project is a web application that uses Google's Gemini AI to generate content based on user input. It's built with Flask for the backend and uses HTML, CSS (Tailwind), and JavaScript for the frontend.
