@@ -12,6 +12,7 @@ This project is a web application that uses Google's Gemini AI to generate conte
 - Option to provide brand voice examples
 - Adjustable word count for generated content
 - Responsive web interface
+- SEO keyword optimization support
 
 ## Technologies Used
 

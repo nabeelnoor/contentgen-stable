@@ -26,6 +26,7 @@ def generate_content():
     main_prompt = data.get("main_prompt")
     language = data.get("language")
     content_style = data.get("content_style")
+    keywords = data.get("keywords", "").strip()
 
     # Updated prompt template with content style
     prompt = f"""
@@ -39,12 +40,14 @@ def generate_content():
     - Word Count: {word_count if word_count else 'Not specified'}
     - Language: {language if language else 'English'}
     - Content Style: {content_style if content_style else 'Not specified'}
+    - Keywords: {keywords if keywords else 'Not specified'}
 
     Style Guidelines:
     {get_style_guidelines(content_style)}
 
     Please generate content based on the main prompt, considering the specified parameters. 
     The content should be in {language} language and follow the style guidelines provided.
+    If keywords are provided, naturally incorporate them into the content for SEO optimization.
     """
 
     try:

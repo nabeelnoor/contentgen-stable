@@ -48,7 +48,8 @@ document.getElementById('contentForm').addEventListener('submit', function(event
         word_count: wordCount,
         main_prompt: mainPrompt,
         language: language,
-        content_style: contentStyle
+        content_style: contentStyle,
+        keywords: document.getElementById('keywords').value
     };
 
     fetch('/generate-content', {
