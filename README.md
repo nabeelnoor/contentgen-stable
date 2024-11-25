@@ -9,6 +9,7 @@ This project is a web application that uses Google's Gemini AI to generate conte
 - Generate content using AI based on user-specified parameters
 - Customizable tone of writing
 - Multiple content style options (Formal, Concise, Outline, etc.)
+- Target audience specification for better content tailoring
 - Option to provide brand voice examples
 - Adjustable word count for generated content
 - Responsive web interface

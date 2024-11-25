@@ -22,13 +22,14 @@ def generate_content():
     data = request.json
     tone = data.get("tone")
     brand_voice = data.get("brand_voice")
+    target_audience = data.get("target_audience")
     word_count = data.get("word_count")
     main_prompt = data.get("main_prompt")
     language = data.get("language")
     content_style = data.get("content_style")
     keywords = data.get("keywords", "").strip()
 
-    # Updated prompt template with content style
+    # Updated prompt template with target audience
     prompt = f"""
     Content Generation Request:
     
@@ -37,6 +38,7 @@ def generate_content():
     Parameters:
     - Tone: {tone if tone else 'Not specified'}
     - Brand Voice: {brand_voice if brand_voice else 'Not specified'}
+    - Target Audience: {target_audience if target_audience else 'Not specified'}
     - Word Count: {word_count if word_count else 'Not specified'}
     - Language: {language if language else 'English'}
     - Content Style: {content_style if content_style else 'Not specified'}
@@ -47,6 +49,7 @@ def generate_content():
 
     Please generate content based on the main prompt, considering the specified parameters. 
     The content should be in {language} language and follow the style guidelines provided.
+    If a target audience is specified, ensure the content is tailored to their preferences and needs.
     If keywords are provided, naturally incorporate them into the content for SEO optimization.
     """
 

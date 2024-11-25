@@ -45,6 +45,7 @@ document.getElementById('contentForm').addEventListener('submit', function(event
     const data = {
         tone: tone,
         brand_voice: brandVoice,
+        target_audience: document.getElementById('target_audience').value,
         word_count: wordCount,
         main_prompt: mainPrompt,
         language: language,
