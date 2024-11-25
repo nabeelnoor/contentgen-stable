@@ -36,21 +36,26 @@ def generate_content():
     create_slug = data.get("create_slug", False)
     create_meta = data.get("create_meta", False)
     
-    # Build additional prompts if needed
-    additional_requests = []
-    if create_title:
-        additional_requests.append("Please create a compelling article title.")
-    if create_slug:
-        additional_requests.append("Generate a URL-friendly slug for this article (lowercase, hyphenated, no special characters).")
-    if create_meta:
-        additional_requests.append("Create a meta description/excerpt (150-160 characters) that summarizes the content and includes key SEO terms.")
+    # Extract knowledge sources and priorities
+    knowledge_source_1 = data.get("knowledge_source_1", "").strip()
+    knowledge_source_2 = data.get("knowledge_source_2", "").strip()
+    priority_1 = int(data.get("priority_1", 5))
+    priority_2 = int(data.get("priority_2", 5))
     
-    additional_prompt = "\n".join(additional_requests)
+    # Add knowledge sources to prompt if provided
+    knowledge_sources = []
+    if knowledge_source_1:
+        knowledge_sources.append(f"Knowledge Source 1 (Priority: {priority_1}/10):\n{knowledge_source_1}")
+    if knowledge_source_2:
+        knowledge_sources.append(f"Knowledge Source 2 (Priority: {priority_2}/10):\n{knowledge_source_2}")
+    
+    knowledge_prompt = "\n\nReference Materials:\n" + "\n\n".join(knowledge_sources) if knowledge_sources else ""
     
     prompt = f"""
     Content Generation Request:
     
     Main Prompt: {main_prompt}
+    {knowledge_prompt}
 
     Parameters:
     - Tone: {tone if tone else 'Not specified'}

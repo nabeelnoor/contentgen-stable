@@ -32,6 +32,35 @@ document.getElementById('themeToggle').addEventListener('click', function() {
     }
 });
 
+// Character count updates
+function updateCharCount(inputId, countId) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(countId);
+    
+    input.addEventListener('input', function() {
+        counter.textContent = this.value.length;
+    });
+}
+
+// Priority slider updates
+function updatePriorityValue(sliderId, valueId) {
+    const slider = document.getElementById(sliderId);
+    const value = document.getElementById(valueId);
+    
+    slider.addEventListener('input', function() {
+        value.textContent = this.value;
+    });
+}
+
+// Initialize character counters
+updateCharCount('main_prompt', 'main_prompt_count');
+updateCharCount('knowledge_source_1', 'knowledge_source_1_count');
+updateCharCount('knowledge_source_2', 'knowledge_source_2_count');
+
+// Initialize priority sliders
+updatePriorityValue('priority_1', 'priority_1_value');
+updatePriorityValue('priority_2', 'priority_2_value');
+
 document.getElementById('contentForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -53,7 +82,11 @@ document.getElementById('contentForm').addEventListener('submit', function(event
         keywords: document.getElementById('keywords').value,
         create_title: document.getElementById('create_title').checked,
         create_slug: document.getElementById('create_slug').checked,
-        create_meta: document.getElementById('create_meta').checked
+        create_meta: document.getElementById('create_meta').checked,
+        knowledge_source_1: document.getElementById('knowledge_source_1').value,
+        knowledge_source_2: document.getElementById('knowledge_source_2').value,
+        priority_1: document.getElementById('priority_1').value,
+        priority_2: document.getElementById('priority_2').value
     };
 
     fetch('/generate-content', {

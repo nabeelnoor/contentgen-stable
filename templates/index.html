@@ -117,7 +117,78 @@
 
                 <div>
                     <label for="main_prompt" class="block text-sm font-medium text-gray-700">Content Info (Main Prompt):</label>
-                    <textarea id="main_prompt" name="main_prompt" rows="4" class="mt-1 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"></textarea>
+                    <textarea 
+                        id="main_prompt" 
+                        name="main_prompt" 
+                        rows="4" 
+                        maxlength="5000"
+                        class="mt-1 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+                    ></textarea>
+                    <div class="text-xs text-gray-500 mt-1">
+                        <span id="main_prompt_count">0</span>/5000 characters
+                    </div>
+                </div>
+
+                <div class="space-y-6 mt-6">
+                    <h3 class="text-lg font-medium text-gray-900">Extra Knowledge Sources (Optional)</h3>
+                    
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <label for="knowledge_source_1" class="block text-sm font-medium text-gray-700">Knowledge Source 1:</label>
+                            <div class="flex items-center">
+                                <span class="text-sm text-gray-500 mr-2">Priority:</span>
+                                <input 
+                                    type="range" 
+                                    id="priority_1" 
+                                    name="priority_1" 
+                                    min="1" 
+                                    max="10" 
+                                    value="5"
+                                    class="w-32"
+                                >
+                                <span id="priority_1_value" class="text-sm text-gray-500 ml-2">5</span>
+                            </div>
+                        </div>
+                        <textarea 
+                            id="knowledge_source_1" 
+                            name="knowledge_source_1" 
+                            rows="4" 
+                            maxlength="5000"
+                            class="mt-1 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+                        ></textarea>
+                        <div class="text-xs text-gray-500 mt-1">
+                            <span id="knowledge_source_1_count">0</span>/5000 characters
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between">
+                            <label for="knowledge_source_2" class="block text-sm font-medium text-gray-700">Knowledge Source 2:</label>
+                            <div class="flex items-center">
+                                <span class="text-sm text-gray-500 mr-2">Priority:</span>
+                                <input 
+                                    type="range" 
+                                    id="priority_2" 
+                                    name="priority_2" 
+                                    min="1" 
+                                    max="10" 
+                                    value="5"
+                                    class="w-32"
+                                >
+                                <span id="priority_2_value" class="text-sm text-gray-500 ml-2">5</span>
+                            </div>
+                        </div>
+                        <textarea 
+                            id="knowledge_source_2" 
+                            name="knowledge_source_2" 
+                            rows="4" 
+                            maxlength="5000"
+                            class="mt-1 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+                        ></textarea>
+                        <div class="text-xs text-gray-500 mt-1">
+                            <span id="knowledge_source_2_count">0</span>/5000 characters
+                        </div>
+                    </div>
                 </div>
 
                 <div>
