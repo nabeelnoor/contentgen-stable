@@ -50,7 +50,10 @@ document.getElementById('contentForm').addEventListener('submit', function(event
         main_prompt: mainPrompt,
         language: language,
         content_style: contentStyle,
-        keywords: document.getElementById('keywords').value
+        keywords: document.getElementById('keywords').value,
+        create_title: document.getElementById('create_title').checked,
+        create_slug: document.getElementById('create_slug').checked,
+        create_meta: document.getElementById('create_meta').checked
     };
 
     fetch('/generate-content', {

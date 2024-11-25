@@ -101,7 +101,7 @@
                 </div>
 
                 <div>
-                    <label for="brand_voice" class="block text-sm font-medium text-gray-700">Example Brand Voice (content example):</label>
+                    <label for="brand_voice" class="block text-sm font-medium text-gray-700">Example Brand Voice (content example - optional):</label>
                     <textarea id="brand_voice" name="brand_voice" rows="4" class="mt-1 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"></textarea>
                 </div>
 
@@ -179,8 +179,25 @@
                 </div>
 
                 <div>
-                    <label for="keywords" class="block text-sm font-medium text-gray-700">SEO Keywords (comma-separated):</label>
+                    <label for="keywords" class="block text-sm font-medium text-gray-700">SEO Keywords (comma-separated - optional):</label>
                     <input type="text" id="keywords" name="keywords" placeholder="e.g. technology, innovation, future" class="mt-1 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md">
+                </div>
+
+                <div class="space-y-4 mt-6">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="create_title" name="create_title" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="create_title" class="ml-2 block text-sm text-gray-700">Create article title</label>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <input type="checkbox" id="create_slug" name="create_slug" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="create_slug" class="ml-2 block text-sm text-gray-700">Create URL slug for this article</label>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        <input type="checkbox" id="create_meta" name="create_meta" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="create_meta" class="ml-2 block text-sm text-gray-700">Create meta description/excerpt</label>
+                    </div>
                 </div>
 
                 <div>

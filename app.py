@@ -20,6 +20,8 @@ def index():
 @app.route('/generate-content', methods=['POST'])
 def generate_content():
     data = request.json
+    
+    # Extract existing fields
     tone = data.get("tone")
     brand_voice = data.get("brand_voice")
     target_audience = data.get("target_audience")
@@ -28,8 +30,23 @@ def generate_content():
     language = data.get("language")
     content_style = data.get("content_style")
     keywords = data.get("keywords", "").strip()
-
-    # Updated prompt template with target audience
+    
+    # Extract new fields
+    create_title = data.get("create_title", False)
+    create_slug = data.get("create_slug", False)
+    create_meta = data.get("create_meta", False)
+    
+    # Build additional prompts if needed
+    additional_requests = []
+    if create_title:
+        additional_requests.append("Please create a compelling article title.")
+    if create_slug:
+        additional_requests.append("Generate a URL-friendly slug for this article (lowercase, hyphenated, no special characters).")
+    if create_meta:
+        additional_requests.append("Create a meta description/excerpt (150-160 characters) that summarizes the content and includes key SEO terms.")
+    
+    additional_prompt = "\n".join(additional_requests)
+    
     prompt = f"""
     Content Generation Request:
     
@@ -47,18 +64,18 @@ def generate_content():
     Style Guidelines:
     {get_style_guidelines(content_style)}
 
-    Please generate content based on the main prompt, considering the specified parameters. 
-    The content should be in {language} language and follow the style guidelines provided.
-    If a target audience is specified, ensure the content is tailored to their preferences and needs.
-    If keywords are provided, naturally incorporate them into the content for SEO optimization.
+    Additional Requests:
+    {additional_prompt if additional_requests else ''}
+
+    Please generate the content based on the main prompt, considering all specified parameters.
+    If additional elements were requested (title, slug, meta description), please provide them
+    clearly separated before the main content using appropriate headers.
     """
 
     try:
-        # Use the gemini model to generate content
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(prompt)
-
-        # Handle the response from the Gemini API
+        
         if response and hasattr(response, 'text'):
             return jsonify({"content": response.text})
         else:
