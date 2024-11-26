@@ -102,7 +102,16 @@
 
                 <div>
                     <label for="brand_voice" class="block text-sm font-medium text-gray-700">Example Brand Voice (content example - optional):</label>
-                    <textarea id="brand_voice" name="brand_voice" rows="4" class="mt-1 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"></textarea>
+                    <textarea 
+                        id="brand_voice" 
+                        name="brand_voice" 
+                        rows="4" 
+                        maxlength="5000"
+                        class="mt-1 block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md"
+                    ></textarea>
+                    <div class="text-xs text-gray-500 mt-1">
+                        <span id="brand_voice_count">0</span>/5000 characters
+                    </div>
                 </div>
 
                 <div>

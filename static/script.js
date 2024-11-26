@@ -56,6 +56,7 @@ function updatePriorityValue(sliderId, valueId) {
 updateCharCount('main_prompt', 'main_prompt_count');
 updateCharCount('knowledge_source_1', 'knowledge_source_1_count');
 updateCharCount('knowledge_source_2', 'knowledge_source_2_count');
+updateCharCount('brand_voice', 'brand_voice_count');
 
 // Initialize priority sliders
 updatePriorityValue('priority_1', 'priority_1_value');
