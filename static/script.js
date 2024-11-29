@@ -81,13 +81,11 @@ document.getElementById('contentForm').addEventListener('submit', function(event
         language: language,
         content_style: contentStyle,
         keywords: document.getElementById('keywords').value,
-        create_title: document.getElementById('create_title').checked,
-        create_slug: document.getElementById('create_slug').checked,
-        create_meta: document.getElementById('create_meta').checked,
-        knowledge_source_1: document.getElementById('knowledge_source_1').value,
-        knowledge_source_2: document.getElementById('knowledge_source_2').value,
-        priority_1: document.getElementById('priority_1').value,
-        priority_2: document.getElementById('priority_2').value
+        additional_requests: {
+            create_title: document.getElementById('create_title').checked,
+            create_slug: document.getElementById('create_slug').checked,
+            create_meta: document.getElementById('create_meta').checked
+        }
     };
 
     fetch('/generate-content', {

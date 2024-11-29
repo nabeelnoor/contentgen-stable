@@ -40,13 +40,19 @@ def generate_content():
         language = data.get('language')
         content_style = data.get('content_style')
         keywords = data.get('keywords')
-        additional_requests = data.get('additional_requests')
+        
+        # Handle additional requests
+        additional_requests_data = data.get('additional_requests', {})
+        additional_requests = build_additional_requests(
+            additional_requests_data.get('create_title', False),
+            additional_requests_data.get('create_slug', False),
+            additional_requests_data.get('create_meta', False)
+        )
 
         prompt = f"""
         Content Generation Request:
         
         Main Prompt: {main_prompt}
-        {knowledge_prompt}
 
         Parameters:
         - Tone: {tone if tone else 'Not specified'}
