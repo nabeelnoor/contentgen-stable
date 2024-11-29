@@ -19,65 +19,51 @@ def index():
 
 @app.route('/generate-content', methods=['POST'])
 def generate_content():
-    data = request.json
-    
-    # Extract existing fields
-    tone = data.get("tone")
-    brand_voice = data.get("brand_voice")
-    target_audience = data.get("target_audience")
-    word_count = data.get("word_count")
-    main_prompt = data.get("main_prompt")
-    language = data.get("language")
-    content_style = data.get("content_style")
-    keywords = data.get("keywords", "").strip()
-    
-    # Extract new fields
-    create_title = data.get("create_title", False)
-    create_slug = data.get("create_slug", False)
-    create_meta = data.get("create_meta", False)
-    
-    # Extract knowledge sources and priorities
-    knowledge_source_1 = data.get("knowledge_source_1", "").strip()
-    knowledge_source_2 = data.get("knowledge_source_2", "").strip()
-    priority_1 = int(data.get("priority_1", 5))
-    priority_2 = int(data.get("priority_2", 5))
-    
-    # Add knowledge sources to prompt if provided
-    knowledge_sources = []
-    if knowledge_source_1:
-        knowledge_sources.append(f"Knowledge Source 1 (Priority: {priority_1}/10):\n{knowledge_source_1}")
-    if knowledge_source_2:
-        knowledge_sources.append(f"Knowledge Source 2 (Priority: {priority_2}/10):\n{knowledge_source_2}")
-    
-    knowledge_prompt = "\n\nReference Materials:\n" + "\n\n".join(knowledge_sources) if knowledge_sources else ""
-    
-    prompt = f"""
-    Content Generation Request:
-    
-    Main Prompt: {main_prompt}
-    {knowledge_prompt}
-
-    Parameters:
-    - Tone: {tone if tone else 'Not specified'}
-    - Brand Voice: {brand_voice if brand_voice else 'Not specified'}
-    - Target Audience: {target_audience if target_audience else 'Not specified'}
-    - Word Count: {word_count if word_count else 'Not specified'}
-    - Language: {language if language else 'English'}
-    - Content Style: {content_style if content_style else 'Not specified'}
-    - Keywords: {keywords if keywords else 'Not specified'}
-
-    Style Guidelines:
-    {get_style_guidelines(content_style)}
-
-    Additional Requests:
-    {additional_prompt if additional_requests else ''}
-
-    Please generate the content based on the main prompt, considering all specified parameters.
-    If additional elements were requested (title, slug, meta description), please provide them
-    clearly separated before the main content using appropriate headers.
-    """
-
     try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "No data provided"}), 400
+            
+        # Validate required fields
+        required_fields = ['main_prompt', 'word_count']
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({"error": f"Missing required field: {field}"}), 400
+
+        # Extract data from request
+        main_prompt = data.get('main_prompt')
+        knowledge_prompt = data.get('knowledge_source', '')
+        tone = data.get('tone')
+        brand_voice = data.get('brand_voice')
+        target_audience = data.get('target_audience')
+        word_count = data.get('word_count')
+        language = data.get('language')
+        content_style = data.get('content_style')
+        keywords = data.get('keywords')
+        additional_requests = data.get('additional_requests')
+
+        prompt = f"""
+        Content Generation Request:
+        
+        Main Prompt: {main_prompt}
+        {knowledge_prompt}
+
+        Parameters:
+        - Tone: {tone if tone else 'Not specified'}
+        - Brand Voice: {brand_voice if brand_voice else 'Not specified'}
+        - Target Audience: {target_audience if target_audience else 'Not specified'}
+        - Word Count: {word_count if word_count else 'Not specified'}
+        - Language: {language if language else 'English'}
+        - Content Style: {content_style if content_style else 'Not specified'}
+        - Keywords: {keywords if keywords else 'Not specified'}
+
+        Style Guidelines:
+        {get_style_guidelines(content_style)}
+
+        Additional Requests:
+        {additional_requests if additional_requests else 'None'}
+        """
+
         model = genai.GenerativeModel("gemini-1.5-flash")
         response = model.generate_content(prompt)
         
@@ -88,7 +74,10 @@ def generate_content():
 
     except Exception as e:
         print(f"Error during content generation: {str(e)}")
-        return jsonify({"error": f"Exception occurred: {str(e)}"}), 500
+        return jsonify({
+            "error": "Content generation failed",
+            "details": str(e)
+        }), 500
 
 def get_style_guidelines(style):
     guidelines = {
@@ -101,6 +90,16 @@ def get_style_guidelines(style):
         "minimalist": "Use the fewest words possible while maintaining clarity. Focus on essential information only."
     }
     return guidelines.get(style, "Use a balanced, professional writing style.")
+
+def build_additional_requests(create_title, create_slug, create_meta):
+    requests = []
+    if create_title:
+        requests.append("- Generate a compelling article title")
+    if create_slug:
+        requests.append("- Create a URL-friendly slug")
+    if create_meta:
+        requests.append("- Generate a meta description/excerpt")
+    return "\n".join(requests) if requests else "None"
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))  # Heroku provides the PORT environment
