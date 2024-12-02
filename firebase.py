@@ -1,6 +1,7 @@
 import firebase_admin
 from firebase_admin import credentials, auth,firestore
 from flask import Flask, request, jsonify, render_template
+from functools import wraps
 from dotenv import load_dotenv
 import os
 
@@ -63,6 +64,7 @@ def handle_new_user(uid,email):
 
 # auth guard that trigger before each route
 def firebase_auth_required(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         id_token = request.headers.get('Authorization')  # Expecting "Bearer <token>"
         if not id_token or not id_token.startswith("Bearer "):

@@ -3,7 +3,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import google.generativeai as genai
-from firebase import firebase_auth_required,is_enough_to_pay_modal,decrement_credit_by_amount
+from firebase import firebase_auth_required,is_enough_to_pay_modal,decrement_credit_by_amount,get_credit_of_user
 
 app = Flask(__name__)
 CORS(app)
@@ -19,6 +19,21 @@ genai.configure(api_key=API_KEY)
 @app.route('/')
 def index():
     return jsonify({"status": "ok"})
+
+@app.route('/credit-check', methods=['GET'])
+@firebase_auth_required
+def credit_check():
+    try:
+        auth_user_id=request.auth_user_id
+        user_credits=get_credit_of_user(auth_user_id)
+        return jsonify({"credits":user_credits}), 200
+    except Exception as e:
+        print(f"Error during content generation: {str(e)}")
+        return jsonify({
+            "error": "Content generation failed",
+            "details": str(e)
+        }), 500
+
 
 @app.route('/generate-content', methods=['POST'])
 @firebase_auth_required
