@@ -12,6 +12,7 @@ cryptography==44.0.0
 docstring_parser==0.16
 firebase-admin==6.6.0
 Flask==2.0.1
+Flask-Cors==5.0.0
 google-ai-generativelanguage==0.6.10
 google-api-core==2.20.0
 google-api-python-client==2.149.0

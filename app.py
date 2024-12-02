@@ -1,9 +1,15 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import google.generativeai as genai
+import firebase_admin
+from firebase_admin import credentials, auth
+
+
 
 app = Flask(__name__)
+CORS(app)
 
 load_dotenv()  # Load environment variables from .env file
 API_KEY = os.getenv("GEMINI_API_KEY")
@@ -12,6 +18,44 @@ if not API_KEY:
 
 # Initialize the genai library with the API key
 genai.configure(api_key=API_KEY)
+
+# initialize firebase sdk credentials
+firebase_credentials = {
+    "type": os.getenv("FIREBASE_TYPE"),
+    "project_id": os.getenv("FIREBASE_PROJECT_ID"),
+    "private_key_id": os.getenv("FIREBASE_PRIVATE_KEY_ID"),
+    "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace('\\n', '\n'),  # Handle multiline keys
+    "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
+    "client_id": os.getenv("FIREBASE_CLIENT_ID"),
+    "auth_uri": os.getenv("FIREBASE_AUTH_URI"),
+    "token_uri": os.getenv("FIREBASE_TOKEN_URI"),
+    "auth_provider_x509_cert_url": os.getenv("FIREBASE_AUTH_PROVIDER_X509_CERT_URL"),
+    "client_x509_cert_url": os.getenv("FIREBASE_CLIENT_X509_CERT_URL"),
+    "universe_domain":os.getenv('FIREBASE_UNIVERSE_DOMAIN')
+}
+
+print("\ndebug-start\n",firebase_credentials,"\ndebug-end\n")
+cred = credentials.Certificate(firebase_credentials)
+firebase_admin.initialize_app(cred)
+
+def firebase_auth_required(func):
+    def wrapper(*args, **kwargs):
+        id_token = request.headers.get('Authorization')  # Expecting "Bearer <token>"
+        if not id_token or not id_token.startswith("Bearer "):
+            return jsonify({'error': 'Authorization header missing or invalid'}), 401
+        id_token = id_token.split("Bearer ")[1]
+
+        user_id = verify_id_token(id_token)
+        
+        print("\ndebug-start\n",user_id,"\ndebug-end\n")
+
+        if not user_id:
+            return jsonify({'error': 'Invalid or expired token'}), 401
+
+        # Optionally, attach user_id to request context
+        request.user_id = user_id
+        return func(*args, **kwargs)
+    return wrapper
 
 @app.route('/')
 def index():
