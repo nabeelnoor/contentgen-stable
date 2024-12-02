@@ -3,10 +3,7 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import google.generativeai as genai
-import firebase_admin
-from firebase_admin import credentials, auth
-
-
+from firebase import firebase_auth_required,is_enough_to_pay_modal,decrement_credit_by_amount
 
 app = Flask(__name__)
 CORS(app)
@@ -19,51 +16,19 @@ if not API_KEY:
 # Initialize the genai library with the API key
 genai.configure(api_key=API_KEY)
 
-# initialize firebase sdk credentials
-firebase_credentials = {
-    "type": os.getenv("FIREBASE_TYPE"),
-    "project_id": os.getenv("FIREBASE_PROJECT_ID"),
-    "private_key_id": os.getenv("FIREBASE_PRIVATE_KEY_ID"),
-    "private_key": os.getenv("FIREBASE_PRIVATE_KEY").replace('\\n', '\n'),  # Handle multiline keys
-    "client_email": os.getenv("FIREBASE_CLIENT_EMAIL"),
-    "client_id": os.getenv("FIREBASE_CLIENT_ID"),
-    "auth_uri": os.getenv("FIREBASE_AUTH_URI"),
-    "token_uri": os.getenv("FIREBASE_TOKEN_URI"),
-    "auth_provider_x509_cert_url": os.getenv("FIREBASE_AUTH_PROVIDER_X509_CERT_URL"),
-    "client_x509_cert_url": os.getenv("FIREBASE_CLIENT_X509_CERT_URL"),
-    "universe_domain":os.getenv('FIREBASE_UNIVERSE_DOMAIN')
-}
-
-print("\ndebug-start\n",firebase_credentials,"\ndebug-end\n")
-cred = credentials.Certificate(firebase_credentials)
-firebase_admin.initialize_app(cred)
-
-def firebase_auth_required(func):
-    def wrapper(*args, **kwargs):
-        id_token = request.headers.get('Authorization')  # Expecting "Bearer <token>"
-        if not id_token or not id_token.startswith("Bearer "):
-            return jsonify({'error': 'Authorization header missing or invalid'}), 401
-        id_token = id_token.split("Bearer ")[1]
-
-        user_id = verify_id_token(id_token)
-        
-        print("\ndebug-start\n",user_id,"\ndebug-end\n")
-
-        if not user_id:
-            return jsonify({'error': 'Invalid or expired token'}), 401
-
-        # Optionally, attach user_id to request context
-        request.user_id = user_id
-        return func(*args, **kwargs)
-    return wrapper
-
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return jsonify({"status": "ok"})
 
 @app.route('/generate-content', methods=['POST'])
+@firebase_auth_required
 def generate_content():
     try:
+        model_run_cost=15
+        auth_user_id=request.auth_user_id
+        auth_user_email=request.auth_email
+        print('following user try to use modal',auth_user_email)
+        
         data = request.json
         if not data:
             return jsonify({"error": "No data provided"}), 400
@@ -73,6 +38,12 @@ def generate_content():
         for field in required_fields:
             if not data.get(field):
                 return jsonify({"error": f"Missing required field: {field}"}), 400
+
+        # validate whether user have enough credit to run model
+        is_allowed_by_cost = is_enough_to_pay_modal(auth_user_id,model_run_cost)
+        if not is_allowed_by_cost:
+            return jsonify({"error": "Failed to run modal due to low credit, please buy credits"}), 400
+
 
         # Extract data from request
         main_prompt = data.get('main_prompt')
@@ -118,6 +89,7 @@ def generate_content():
         response = model.generate_content(prompt)
         
         if response and hasattr(response, 'text'):
+            decrement_credit_by_amount(auth_user_id,model_run_cost)
             return jsonify({"content": response.text})
         else:
             return jsonify({"error": "Failed to generate content"}), 500
