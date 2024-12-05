@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import google.generativeai as genai
+from firebase import firebase_auth_required,is_enough_to_pay_modal,decrement_credit_by_amount,get_credit_of_user
 
 app = Flask(__name__)
+CORS(app)
 
 load_dotenv()  # Load environment variables from .env file
 API_KEY = os.getenv("GEMINI_API_KEY")
@@ -15,11 +18,32 @@ genai.configure(api_key=API_KEY)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return jsonify({"status": "ok"})
+
+@app.route('/credit-check', methods=['GET'])
+@firebase_auth_required
+def credit_check():
+    try:
+        auth_user_id=request.auth_user_id
+        user_credits=get_credit_of_user(auth_user_id)
+        return jsonify({"credits":user_credits}), 200
+    except Exception as e:
+        print(f"Error during content generation: {str(e)}")
+        return jsonify({
+            "error": "Content generation failed",
+            "details": str(e)
+        }), 500
+
 
 @app.route('/generate-content', methods=['POST'])
+@firebase_auth_required
 def generate_content():
     try:
+        model_run_cost=15
+        auth_user_id=request.auth_user_id
+        auth_user_email=request.auth_email
+        print('following user try to use modal',auth_user_email)
+        
         data = request.json
         if not data:
             return jsonify({"error": "No data provided"}), 400
@@ -29,6 +53,12 @@ def generate_content():
         for field in required_fields:
             if not data.get(field):
                 return jsonify({"error": f"Missing required field: {field}"}), 400
+
+        # validate whether user have enough credit to run model
+        is_allowed_by_cost = is_enough_to_pay_modal(auth_user_id,model_run_cost)
+        if not is_allowed_by_cost:
+            return jsonify({"error": "Failed to run modal due to low credit, please buy credits"}), 400
+
 
         # Extract data from request
         main_prompt = data.get('main_prompt')
@@ -74,6 +104,7 @@ def generate_content():
         response = model.generate_content(prompt)
         
         if response and hasattr(response, 'text'):
+            decrement_credit_by_amount(auth_user_id,model_run_cost)
             return jsonify({"content": response.text})
         else:
             return jsonify({"error": "Failed to generate content"}), 500

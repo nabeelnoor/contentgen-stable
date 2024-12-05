@@ -1,0 +1,3 @@
+- to access firestore, u have to first setup the firestore from the firebase console.
+- from console,click create database, run db in production mode
+- from rule , change rule to ==> // allow read, write: if request.auth != null;
